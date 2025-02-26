@@ -13,7 +13,7 @@ A NetBox plugin that dynamically reloads plugins without requiring a server rest
 
 | NetBox Version | Plugin Version |
 |----------------|---------------|
-| 4.2.x          | 0.0.1         |
+| 4.2.x          | 0.0.2         |
 
 ## Installation
 

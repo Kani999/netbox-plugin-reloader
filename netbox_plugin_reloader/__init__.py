@@ -3,10 +3,10 @@ NetBox Plugin Reloader - Dynamically reload NetBox plugins without server restar
 """
 
 from netbox.plugins import PluginConfig
-from .version import __version__, __description__
+from netbox_plugin_reloader.version import __version__
 
 
-class PluginReloaderConfig(PluginConfig):
+class NetboxPluginReloaderConfig(PluginConfig):
     """
     Configuration for the Plugin Reloader NetBox plugin.
 
@@ -16,7 +16,7 @@ class PluginReloaderConfig(PluginConfig):
 
     name = "netbox_plugin_reloader"
     verbose_name = "Plugin Reloader"
-    description = __description__
+    description = "Dynamically reload NetBox plugins without server restart"
     version = __version__
     base_url = "netbox-plugin-reloader"
 
@@ -166,4 +166,4 @@ class PluginReloaderConfig(PluginConfig):
 
 
 # Plugin configuration object
-config = PluginReloaderConfig
+config = NetboxPluginReloaderConfig
