@@ -29,7 +29,7 @@ To enable the plugin, add it to the `PLUGINS` list in your `configuration.py`:
 PLUGINS = [
     'other_plugin',
     'another_plugin',
-    'netbox-plugin-reloader',  # Always add netbox_plugin_reloader last!
+    'netbox_plugin_reloader',  # Always add netbox_plugin_reloader last!
 ]
 ```
 
