@@ -25,8 +25,8 @@ class NetboxPluginReloaderConfig(PluginConfig):
     required_settings = []
 
     # NetBox version compatibility
-    min_version = "4.2.0"
-    max_version = "4.2.99"
+    min_version = "4.3.0"
+    max_version = "4.3.99"
 
     def ready(self):
         """
