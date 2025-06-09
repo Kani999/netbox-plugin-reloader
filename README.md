@@ -69,3 +69,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Author
 
 Jan Krupa <jan.krupa@cesnet.cz>
+
+## Links
+- Based on https://github.com/netbox-community/netbox/discussions/17836
