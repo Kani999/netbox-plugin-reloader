@@ -25,7 +25,9 @@ class NetboxPluginReloaderConfig(PluginConfig):
 
     def ready(self):
         """
-        Plugin initialization logic executed when Django loads the application.
+        Initializes the plugin when the Django application loads.
+        
+        Registers any plugin models missed during startup and refreshes form fields to include newly registered models for custom fields and tags.
         """
         super().ready()
 
@@ -48,7 +50,11 @@ class NetboxPluginReloaderConfig(PluginConfig):
     def _register_missing_plugin_models(
         self, plugin_list, app_registry, netbox_registry, feature_mixins_map, model_register_function
     ):
-        """Register plugin models that weren't properly registered during application startup."""
+        """
+        Registers plugin models that were not registered during initial application startup.
+        
+        Iterates through the provided list of plugin names, identifies models that are missing from the NetBox feature registry, and registers them using the supplied registration function. Prints errors encountered during processing and reports the number of models registered if any were missed.
+        """
         unregistered_models = []
 
         for plugin_name in plugin_list:
@@ -69,7 +75,12 @@ class NetboxPluginReloaderConfig(PluginConfig):
             print(f"Plugin Reloader: Registered {len(unregistered_models)} previously missed models")
 
     def _is_model_registered(self, app_label, model_name, registry, feature_mixins_map):
-        """Check if a model is already registered in any NetBox feature registry."""
+        """
+        Determines whether a model is registered under any NetBox feature.
+        
+        Returns:
+            True if the specified model is present in any feature registry; otherwise, False.
+        """
         return any(
             app_label in registry["model_features"][feature_name]
             and model_name in registry["model_features"][feature_name][app_label]
@@ -77,7 +88,16 @@ class NetboxPluginReloaderConfig(PluginConfig):
         )
 
     def _refresh_form_field(self, form_class, feature_name, object_type_class, field_class, translation_function):
-        """Refresh form field definitions to include newly registered models."""
+        """
+        Updates a form class's object_types field to reflect models supporting a specific NetBox feature.
+        
+        Args:
+            form_class: The form class to update.
+            feature_name: The NetBox feature name (e.g., "custom_fields", "tags").
+            object_type_class: The ContentType-like class used to query object types.
+            field_class: The form field class to instantiate.
+            translation_function: Function used to translate field labels and help texts.
+        """
         field_labels = {
             "custom_fields": ("Object types", "The type(s) of object that have this custom field"),
             "tags": ("Object types", "The type(s) of object that can have this tag"),
