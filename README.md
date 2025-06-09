@@ -6,6 +6,7 @@ A NetBox plugin that dynamically reloads plugins without requiring a server rest
 
 - Dynamically registers plugin models that were missed during server startup
 - Refreshes custom field form definitions to include newly registered models
+- Refreshes tag form definitions to include newly registered models
 - Helps solve integration issues between NetBox and other plugins
 - No configuration required - works out of the box
 
@@ -14,6 +15,9 @@ A NetBox plugin that dynamically reloads plugins without requiring a server rest
 | NetBox Version | Plugin Version |
 |----------------|---------------|
 | 4.2.x          | 0.0.2         |
+| 4.3.x          | 4.3.x         |
+
+**Version Format**: X.X.Y where X.X = NetBox version (e.g., 4.3) and Y = plugin version increment
 
 ## Installation
 
@@ -54,9 +58,10 @@ When NetBox starts, Plugin Reloader:
 
 1. Scans all enabled plugins for models that aren't properly registered in NetBox's feature registry
 2. Registers any missed models with NetBox's registration system
-3. Refreshes form field definitions to ensure they include all registered models
+3. Refreshes custom field form definitions to ensure they include all registered models
+4. Refreshes tag form definitions to ensure they include all registered models
 
-This helps resolve issues where plugins might not fully integrate with NetBox due to load order problems without requiring a server restart.
+This helps resolve issues where plugins might not fully integrate with NetBox due to load order problems without requiring a server restart. The reloader specifically updates custom field choices and tag choices to include newly registered plugin models.
 
 ## Contributing
 
