@@ -20,8 +20,8 @@ class NetboxPluginReloaderConfig(PluginConfig):
     description = "Dynamically reload NetBox plugins without server restart"
     version = __version__
     base_url = "netbox-plugin-reloader"
-    min_version = "4.3.0"
-    max_version = "4.3.99"
+    min_version = "4.4.0"
+    max_version = "4.4.99"
 
     def ready(self):
         """
@@ -31,8 +31,8 @@ class NetboxPluginReloaderConfig(PluginConfig):
         """
         super().ready()
 
-        from core.models import ObjectType
-        from django.apps import apps
+        from core.models.object_types import ObjectType
+        from django.apps.registry import apps
         from django.conf import settings
         from django.utils.translation import gettext_lazy as _
         from extras.forms.model_forms import CustomFieldForm, TagForm
