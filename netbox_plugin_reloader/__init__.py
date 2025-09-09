@@ -26,7 +26,7 @@ class NetboxPluginReloaderConfig(PluginConfig):
     def ready(self):
         """
         Initializes the plugin when the Django application loads.
-        
+
         Registers any plugin models missed during startup and refreshes form fields to include newly registered models for custom fields and tags.
         """
         super().ready()
@@ -36,23 +36,21 @@ class NetboxPluginReloaderConfig(PluginConfig):
         from django.conf import settings
         from django.utils.translation import gettext_lazy as _
         from extras.forms.model_forms import CustomFieldForm, TagForm
-        from netbox.models.features import FEATURES_MAP, register_models
+        from netbox.models.features import register_models
         from netbox.registry import registry
         from utilities.forms.fields import ContentTypeMultipleChoiceField
 
         # Register missing plugin models
-        self._register_missing_plugin_models(settings.PLUGINS, apps, registry, FEATURES_MAP, register_models)
+        self._register_missing_plugin_models(settings.PLUGINS, apps, registry, register_models)
 
         # Refresh form fields
         self._refresh_form_field(CustomFieldForm, "custom_fields", ObjectType, ContentTypeMultipleChoiceField, _)
         self._refresh_form_field(TagForm, "tags", ObjectType, ContentTypeMultipleChoiceField, _)
 
-    def _register_missing_plugin_models(
-        self, plugin_list, app_registry, netbox_registry, feature_mixins_map, model_register_function
-    ):
+    def _register_missing_plugin_models(self, plugin_list, app_registry, netbox_registry, model_register_function):
         """
         Registers plugin models that were not registered during initial application startup.
-        
+
         Iterates through the provided list of plugin names, identifies models that are missing from the NetBox feature registry, and registers them using the supplied registration function. Prints errors encountered during processing and reports the number of models registered if any were missed.
         """
         unregistered_models = []
@@ -64,7 +62,7 @@ class NetboxPluginReloaderConfig(PluginConfig):
 
                 for model_class in plugin_app_config.get_models():
                     model_name = model_class._meta.model_name
-                    if not self._is_model_registered(app_label, model_name, netbox_registry, feature_mixins_map):
+                    if not self._is_model_registered(app_label, model_name, netbox_registry):
                         unregistered_models.append(model_class)
 
             except Exception as e:
@@ -74,23 +72,21 @@ class NetboxPluginReloaderConfig(PluginConfig):
             model_register_function(*unregistered_models)
             print(f"Plugin Reloader: Registered {len(unregistered_models)} previously missed models")
 
-    def _is_model_registered(self, app_label, model_name, registry, feature_mixins_map):
+    def _is_model_registered(self, app_label, model_name, registry):
         """
-        Determines whether a model is registered under any NetBox feature.
-        
+        Determines whether a model is registered in the NetBox registry.
+
+        In NetBox 4.4+, we check if the model is in the registry['models'] structure.
+
         Returns:
-            True if the specified model is present in any feature registry; otherwise, False.
+            True if the specified model is present in the registry; otherwise, False.
         """
-        return any(
-            app_label in registry["model_features"][feature_name]
-            and model_name in registry["model_features"][feature_name][app_label]
-            for feature_name in feature_mixins_map.keys()
-        )
+        return app_label in registry["models"] and model_name in registry["models"][app_label]
 
     def _refresh_form_field(self, form_class, feature_name, object_type_class, field_class, translation_function):
         """
         Updates a form class's object_types field to reflect models supporting a specific NetBox feature.
-        
+
         Args:
             form_class: The form class to update.
             feature_name: The NetBox feature name (e.g., "custom_fields", "tags").
